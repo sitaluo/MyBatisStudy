@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="main.java.com.sitaluo.mapper.OrdersMapperCustom">
+
+	<!-- 一对一查询   -->
+	<select id="findOrdersUser"  resultType="main.java.com.sitaluo.domain.OrdersCustom">
+			SELECT
+				orders.id,
+				orders.create_time createTime,
+				orders.note note,
+				orders.order_num number,
+				orders.user_id userId,
+				USER .username,
+				USER .age,
+				USER .address
+			FROM
+				orders,
+				USER
+			WHERE
+				orders.user_id = USER .id
+	</select>
+	
+	<resultMap type="main.java.com.sitaluo.domain.Orders" id="ordersUserResultMap">
+		<id column="id" property="id"/>
+		<result column="createTime" property="createTime"/>
+		<result column="note" property="note"/>
+		<result column="number"  property="number"/>
+		<result column="userId" property="userId"/>
+		
+		<!-- 用于查询关联映射的单个对象的信息 -->
+		<association property="user" javaType="main.java.com.sitaluo.domain.User">
+			<id column="userId" property="id"/>
+			<result column="username" property="userName"/>
+			<result column="age"  property="age"/>
+			<result column="address" property="address"/>
+		</association>
+				
+	</resultMap>
+	<!-- 将查询结果的订单信息映射到orders中，将关联的用户信息映射到user属性中 -->
+	<select id="findOrdersUserByResultMap"  resultMap="ordersUserResultMap">
+			SELECT
+				orders.id,
+				orders.create_time createTime,
+				orders.note note,
+				orders.order_num number,
+				orders.user_id userId,
+				USER .username,
+				USER .age,
+				USER .address
+			FROM
+				orders,
+				USER
+			WHERE
+				orders.user_id = USER .id
+	</select>
+	
+	
+	<resultMap type="main.java.com.sitaluo.domain.Orders" id="findOrdersAndOrdersDetailResultMap" extends="ordersUserResultMap">
+		<!-- 订单信息，用户信息，订单明细信息 -->
+		<!-- 用于查询关联映射的单个对象的信息 -->
+		
+		<!-- 明细 -->
+		<collection property="ordersDetails" ofType="main.java.com.sitaluo.domain.OrdersDetail">
+			<id property="id" column="orderDetailId"/>
+			<result  property="itemId" column="item_id"/>
+			<result  property="orderId" column="id"/>
+			<result  property="itemNum" column="item_num"/>
+		</collection>		
+	</resultMap>
+	
+	<!-- 将查询结果的订单信息以及订单明细映射到orders中，将关联的用户信息映射到user属性中 -->
+	<select id="findOrdersAndOrdersDetailResultMap"  resultMap="findOrdersAndOrdersDetailResultMap">
+			SELECT
+				orders.id,
+				orders.create_time createTime,
+				orders.note note,
+				orders.order_num number,
+				orders.user_id userId,
+				USER .username,
+				USER .age,
+				USER .address,
+				order_detail.item_id,
+				order_detail.item_num,
+				order_detail.id orderDetailId
+			FROM
+				orders,
+				USER,
+				order_detail
+			WHERE
+				orders.user_id = USER .id and order_detail.order_id = orders.id
+	</select>
+</mapper>
