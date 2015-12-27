@@ -14,7 +14,7 @@
 				orders.user_id userId,
 				USER .username,
 				USER .age,
-				USER .address
+				USER .address 
 			FROM
 				orders,
 				USER

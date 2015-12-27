@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="main.java.com.sitaluo.mapper.UserMapper">
+	<select id="findUserById" parameterType="int"
+		resultType="main.java.com.sitaluo.domain.User">
+		select * from User where id = #{id}
+	</select>
+	
+	<!-- 输入类型是包装类型 -->
+	<!-- 用户综合信息查询  -->
+	<select id="findUserList"  parameterType="UserQueryVo" resultType="main.java.com.sitaluo.domain.UserCustom">
+		select * from User where user.userName like '%${userCustom.userName}%'
+	</select>
+	
+	<!-- 用户综合信息查询  -->
+	<select id="findUserCount"  parameterType="UserQueryVo" resultType="int">
+		select count(*) from User where user.userName like '%${userCustom.userName}%'
+	</select>
+	
+	<insert id="insertUser">
+		insert into User (id,userName,age,birthday,address)
+		values (#{id},#{userName},#{age},#{birthday},#{address})
+	</insert>
+
+	<update id="updateUser">
+		update User set
+		userName = #{userName},
+		age = #{age},
+		birthday = #{birthday},
+		address = #{address}
+		where id = #{id}
+	</update>
+
+	<delete id="deleteUserById">
+		delete from User where id = #{id}
+	</delete>
+</mapper>
